@@ -1,98 +1,106 @@
-LAB 1 : MARKDOWN FILE
+# LAB 1: MARKDOWN FILE
 
----------------------
-
-1. create the file structure
-
+## 1. Create the File Structure
+```
 downloads/lab1/images/ubuntu/Dockerfile
+```
 
-2. creating the dockerfile
----------------------
-
+## 2. Creating the Dockerfile
+```dockerfile
 # Use the official ubuntu image
 FROM ubuntu:latest
 
-# Set a interactive environment for apt-get to prevent interaction issues
+# Set an interactive environment for apt-get to prevent interaction issues
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install and updater required dependencies
+# Install and update required dependencies
 RUN apt-get update && apt-get install -y \
-     mysql-server \
-     mysql-client \ 
-     && rm -rf  /var/lib/apt/lists/*
+    mysql-server \
+    mysql-client \
+    && rm -rf /var/lib/apt/lists/*
 
-
-# Expose mysql port
+# Expose MySQL port
 EXPOSE 3306
 
-
-# Start mysql service - default
+# Start MySQL service - default
 CMD ["mysqld_safe"]
--------------------------
-3. GitBash
+```
 
-a. Prior checkups
+## 3. GitBash
+### a. Prior Checkups
+```sh
+docker images  # List images
+docker ps      # Running containers
+docker ps -a   # Recently closed containers
+```
 
-    docker images - images
-    docker ps     - running containers
-    docker ps -a  - recently closed containers
+### b. Building Image - Specified by Dockerfile
+```sh
+docker build -t customized-ubuntu:1.0 .
+```
 
-b. Building image - specified by dockerfile
+### c. Build a Container from the Image
+```sh
+docker run -d --name dbserver-mysql-nairobi -p 3309:3306 customized-ubuntu:1.0
+```
 
-    docker build -t customized-ubuntu:1.0 .
+### d. Checking for Running Containers
+```sh
+docker images
+docker ps  # If the container has not started, start manually:
+docker start <container-name>
+```
 
-c. Build a container from the image
-    docker run -d --name dbserver-mysql-nairobi -p 3309:3306 customized-ubuntu:1.0 
+### e. Run Container Interactively (Use winpty for Windows)
+```sh
+winpty docker exec -it dbserver-mysql-nairobi bash
+```
 
-d. Checking for running containers
-    
-    docker images
-    docker ps - if container has not started start manually - "docker start <container name>"
+### f. Check If MySQL Is Installed and Updated
+```sh
+mysql --version
+```
 
-e. Run container interactively - use winpty this was an issue earlier 
-    
-    winpty docker exec -it dbserver-mysql-nairobi bash
+### g. Check for Service Status and Start
+```sh
+service mysql status
+service mysql start
+```
 
-f. Check if mysql is installed and updated(specified in the docker file apt-get update && apt-get install)
+### h. Login to MySQL Server as Root Without Password & Change Root Password
+```sh
+mysql -u root
 
-   interactive terminal
+SELECT User, Host FROM mysql.user;
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '5trathmore';
+FLUSH PRIVILEGES;
+EXIT;
+```
 
-   mysql --version
-    
-g. Check for servive status and start 
-   
-   service mysql status
-   service mysql start
-   
+### i. Login to MySQL Server as Root with Password
+```sh
+mysql -u root -p
+# Enter password: 5trathmore
+EXIT;
+```
 
-h. Login to server as root without password - change root password
+### j. Commit the Changes to the Container
+```sh
+docker commit dbserver-mysql-nairobi dbserver-mysql-nairobi
+docker stop dbserver-mysql-nairobi
+docker ps  # Confirmation
+```
 
-   mysql -u root
-   
-   SELECT User, Host FROM mysql.user ; 
-   ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '5trathmore';
-   FLUSH PRIVILEDGES ; 
-   EXIT
+### k. Restart the Container to Test
+```sh
+docker ps -a  # Check for the name of the recently closed container
+docker start dbserver-mysql-nairobi
+winpty docker exec -it dbserver-mysql-nairobi bash
+```
 
-i. Login to server as root with password
-   
-   mysql -u root -p
-   password: 5trathmore
-   EXIT
+### l. Login as Root with Password "5trathmore"
+```sh
+mysql -u root -p
+# Enter password: 5trathmore
+```
 
-j. Commit the changes to the container
-
-   After exiting the mysql server interactive console
-       
-      docker commit dbserver-mysql-nairobi dbserver-mysql-nairobi
-      docker stop dbserver-mysql-nairobi
-      docker ps - confirmation
-
-k. Restart the container to test
-      docker ps -a - check for name of the recently closed
-      docker start dbserver-mysql-nairobi
-      winpty docker exec -it dbserver-mysql-nairobi bash
-    
-l. login as root with passoword "5trathmore"
-   
---------------------------
