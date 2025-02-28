@@ -12,6 +12,10 @@ To enhance the tracking of unpaid balances in an installment payment system, the
   - "Paid in Full"
   - "Partially Paid"
   - "Unpaid"
+### 3. Benefits
+  - Improved Financial Tracking: Helps in monitoring outstanding payments per order.
+  - Better Customer Management: Allows businesses to follow up on overdue payments efficiently.
+  - Accurate Reporting: Provides real-time insights into installment payment statuses.  
 
 ### 3. Generate an Unpaid Balance Report
 The following SQL query calculates the balance remaining for each order, allowing for better monitoring of unpaid balances.
